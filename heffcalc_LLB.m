@@ -23,11 +23,6 @@ function [Gam_parall_TM,Gam_parall_RE,Gam_perp_TM,Gam_perp_RE,HTM_MFA,...
     HRE_MFA,m0_TM,m0_RE]=heffcalc_LLB(D,muRE,muTM,mRE,mTM,mTTM,mTRE,...
     Hext,x,q,Msperatom,Ms0,ita,PFL,Jc,elev,tFL,J0RERE,J0TMTM,J0RETM,J0TMRE,alp,ip,bbeta)
 constantfile();
-kb=1.38064852e-23;%[J/K]
-mub=9.274e-24;%[J/T]bohr magneton
-hbar=6.58211951440e-16;%[eV.s]
-elev=1;%[electron charge]
-gam=1.760859644e11;%[rad/(s.T)]
 HARE=[0,0,2*D/muRE*mRE(3)];
 HATM=[0,0,2*D/muTM*mTM(3)];
 HeffRE=Hext+HARE;

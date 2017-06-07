@@ -13,8 +13,8 @@ tic
 mREinitt=1;%1\mRE_init_z=1 0\mRE_init_z=-1
 addSTT=0;
 addSOT=1;%0\STT model 1\SOT model
-if addSTT && addSOT
-    error('currently only support STT or SOT');
+if ~(addSTT+addSOT==1)
+    error('choose one of STT or SOT');
 end
 if addSOT
     thetaSHE=0.2;
@@ -103,11 +103,7 @@ tstep=50e-15;%[s]
 szx=size(x_,2);
 % constants
 constantfile();
-kb=1.38064852e-23;%[J/K]
-mub=9.274e-24;%[J/T]bohr magneton
-hbar=6.58211951440e-16;%[eV.s]
 elev=1;%[electron charge]
-gam=1.760859644e11;%[rad/(s.T)]
 % params
 natom=0.001;
 z=7;
