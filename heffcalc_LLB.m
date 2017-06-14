@@ -5,7 +5,7 @@
 %3. mRE, mTM, [unitless], 1x3 vector, magnetization of RE and TM
 %4. mTTM, mTRE,[unitless], 1x3 vector, equilibrium magnetization of RE and
 %TM, calculated from curie weiss equation
-%5. Hext, [Tesla], 1x3 vector, external field 
+%5. Hext, [Tesla], 1x3 vector, external field
 %6. x,q, [unitless], double, concentration of RE,TM
 %7. Msperatom,[mub],double, total magnetic moment at zero temperature
 %8. Ms0, [A/m],double, total magnetic moment at zero temperature
@@ -28,11 +28,22 @@ HATM=[0,0,2*D/muTM*mTM(3)];
 HeffRE=Hext+HARE;
 HeffTM=Hext+HATM;
 
-MsT=abs((x*muRE/mub*mTRE+q*muTM/mub*mTTM))/Msperatom*Ms0;  
-Hi=ita*PFL*Jc*hbar/(2*elev*MsT*tFL);
-
-HRE_MFA=(muRE*HeffRE+J0RERE*mRE+J0RETM*mTM+muRE*Hi/alp*ip)/muRE;%eqn5
-HTM_MFA=(muTM*HeffTM+J0TMTM*mTM+J0TMRE*mRE+muTM*Hi/alp*ip)/muTM;%eqn6
+MsT=abs((x*muRE/mub*mTRE+q*muTM/mub*mTTM))/Msperatom*Ms0;
+if size(MsT,2)==1%for scalar (mz) solution of curie weiss equation
+   Hi=ita*PFL*Jc*hbar./(2*elev*MsT*tFL);
+else %for vector solution of curie weiss equation
+Hitmp=zeros(1,3);
+for cttmp=1:size(mTTM,2)
+    if MsT(cttmp)==0
+        Hitmp(cttmp)=0;
+    else
+        Hitmp(cttmp)=ita*PFL*Jc*hbar./(2*elev*MsT(cttmp)*tFL);
+    end
+end
+Hi=[Hitmp(1),Hitmp(2),Hitmp(3)];
+end
+HRE_MFA=(muRE*HeffRE+J0RERE*mRE+J0RETM*mTM+muRE*Hi.*ip/alp)/muRE;%eqn5
+HTM_MFA=(muTM*HeffTM+J0TMTM*mTM+J0TMRE*mRE+muTM*Hi.*ip/alp)/muTM;%eqn6
 
 xi0_TM=bbeta*muTM*HTM_MFA;%eqn5
 xi0_RE=bbeta*muRE*HRE_MFA;
