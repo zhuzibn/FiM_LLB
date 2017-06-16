@@ -6,9 +6,7 @@
 %4. mTTM, mTRE,[unitless], 1x3 vector, equilibrium magnetization of RE and
 %TM, calculated from curie weiss equation
 %5. Hext, [Tesla], 1x3 vector, external field
-%6. x,q, [unitless], double, concentration of RE,TM
-%7. Msperatom,[mub],double, total magnetic moment at zero temperature
-%8. Ms0, [A/m],double, total magnetic moment at zero temperature
+%8. MsT, [A/m],double, total magnetic moment at zero temperature
 %9. ita,[unitless],double, torque efficiency
 %10. PFL,[unitless],double, FL polarization
 %11. Jc,[A/m2],double, charge current density pass through HM
@@ -18,20 +16,32 @@
 %15. alp,[unitless],double, damping constant
 %16. ip,[unitless],1x3 vector, spin current polarization
 %17. bbeta,[J],double,1/kbT
+%18. addSTT, [1/0], flag if include STT
+%19. addSOT, same as addSTT
+%20. thetaSHE, [unitless], double, spin hall angle, 
 %output
 function [Gam_parall_TM,Gam_parall_RE,Gam_perp_TM,Gam_perp_RE,HTM_MFA,...
     HRE_MFA,m0_TM,m0_RE]=heffcalc_LLB(D,muRE,muTM,mRE,mTM,mTTM,mTRE,...
-    Hext,x,q,Msperatom,Ms0,ita,PFL,Jc,elev,tFL,J0RERE,J0TMTM,J0RETM,J0TMRE,alp,ip,bbeta)
+    Hext,MsT,ita,PFL,Jc,elev,tFL,J0RERE,J0TMTM,J0RETM,J0TMRE,alp,ip,bbeta,addSTT,addSOT,thetaSHE)
 constantfile();
 HARE=[0,0,2*D/muRE*mRE(3)];
 HATM=[0,0,2*D/muTM*mTM(3)];
 HeffRE=Hext+HARE;
 HeffTM=Hext+HATM;
 
-MsT=abs((x*muRE/mub*mTRE+q*muTM/mub*mTTM))/Msperatom*Ms0;
 if size(MsT,2)==1%for scalar (mz) solution of curie weiss equation
-   Hi=ita*PFL*Jc*hbar./(2*elev*MsT*tFL);
+   if addSOT
+    Js=thetaSHE*Jc;
+Hi=Js*hbar/(2*elev*MsT*tFL);   
+elseif addSTT
+Hi=ita*PFL*Jc*hbar/(2*elev*MsT*tFL);
+   end
 else %for vector solution of curie weiss equation
+    if mTRE<1e-3 && mTTM<1e-3
+    error('Ms=0,torque singularity')
+else
+%MsT=abs((x*muRE/mub*mTRE+q*muTM/mub*mTTM))/Msperatom*Ms0;
+end
 Hitmp=zeros(1,3);
 for cttmp=1:size(mTTM,2)
     if MsT(cttmp)==0
