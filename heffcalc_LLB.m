@@ -22,7 +22,8 @@
 %output
 function [Gam_parall_TM,Gam_parall_RE,Gam_perp_TM,Gam_perp_RE,HTM_MFA0,...
     HRE_MFA0,m0_TM,m0_RE]=heffcalc_LLB(D,muRE,muTM,mRE,mTM,mTTM,mTRE,...
-    Hext,MsT,ita,PFL,Jc,elev,tFL,J0RERE,J0TMTM,J0RETM,J0TMRE,alp,ip,bbeta,addSTT,addSOT,thetaSHE)
+    Hext,MsT,ita,PFL,Jc,elev,tFL,J0RERE,J0TMTM,J0RETM,J0TMRE,alp,ip,bbeta,...
+    addSTT,addSOT,thetaSHE,gamTM,gamRE)
 constantfile();
 HARE=[0,0,2*D/muRE*mRE(3)];
 HATM=[0,0,2*D/muTM*mTM(3)];
@@ -73,8 +74,8 @@ m0_RE=Bri_val_RE*xi0_RE/norm(xi0_RE);
 % m0_TM0=Bri_val_TM0*xi0_TM0/norm(xi0_TM0);%eqn5
 % m0_RE0=Bri_val_RE0*xi0_RE0/norm(xi0_RE0);
 
-Lambda_TM=2*gam*alp/(bbeta*muTM);%eqn.6
-Lambda_RE=2*gam*alp/(bbeta*muRE);
+Lambda_TM=2*gamTM*alp/(bbeta*muTM);%eqn.6
+Lambda_RE=2*gamRE*alp/(bbeta*muRE);
 
 Gam_parall_TM=Lambda_TM*Bri_val_TM0/(norm(xi0_TM0)*Bri_prime_TM0);
 Gam_parall_RE=Lambda_RE*Bri_val_RE0/(norm(xi0_RE0)*Bri_prime_RE0);
